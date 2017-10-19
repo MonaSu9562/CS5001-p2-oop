@@ -1,3 +1,4 @@
+package towerdefence;
 /**
  * 
  */
@@ -7,8 +8,7 @@
  *
  */
 public class Catapult extends Tower {
-    public Catapult(){
-        this.damage = 5;
-        this.loadTime = 3;
+    public Catapult() {
+        super(5, 3);
     }
 }

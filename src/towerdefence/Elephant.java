@@ -1,3 +1,4 @@
+package towerdefence;
 /**
  * 
  */
@@ -7,5 +8,7 @@
  *
  */
 public class Elephant extends Enemy {
-
+    public Elephant() {
+        super(10, 0.5);
+    }
 }
