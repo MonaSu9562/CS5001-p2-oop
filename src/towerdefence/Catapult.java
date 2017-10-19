@@ -9,6 +9,6 @@ package towerdefence;
  */
 public class Catapult extends Tower {
     public Catapult() {
-        super(5, 3);
+        super(5, 3, "Catapult");
     }
 }

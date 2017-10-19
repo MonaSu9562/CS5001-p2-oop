@@ -11,10 +11,12 @@ public class Enemy {
     protected int health;
     protected int position;
     protected double speed;
+    protected String type;
 
-    public Enemy(int health, double speed) {
+    public Enemy(int health, double speed, String type) {
         this.health = health;
         this.speed = speed;
+        this.type = type;
         this.position = 0;
     }
 
@@ -48,5 +50,10 @@ public class Enemy {
      */
     public void advance() {
         this.position += speed;
+    }
+
+    @Override
+    public String toString() {
+        return ("Type: " + this.type + " HP: " + health + " Postion: " + position);
     }
 }

@@ -9,7 +9,7 @@ package towerdefence;
  */
 public class Slingshot extends Tower {
     public Slingshot() {
-        super(1, 1);
+        super(1, 1, "Slingshot");
     }
 
     public String toString() {

@@ -12,10 +12,12 @@ public class Tower {
     protected int damage;
     protected int position;
     protected int loadTime;
+    protected String type;
 
-    public Tower(int damage, int loadTime) {
+    public Tower(int damage, int loadTime, String type) {
         this.damage = damage;
         this.loadTime = loadTime;
+        this.type = type;
         this.position = 0;
     }
 
@@ -48,4 +50,8 @@ public class Tower {
         }
     }
 
+    @Override
+    public String toString() {
+        return ("Type: " + this.type + " Damage: " + this.damage + " Position: " + this.position);
+    }
 }
