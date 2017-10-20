@@ -112,6 +112,86 @@ public class Game {
         geneEnemy();
 
         // place new towers
+        buildTower();
+
+        // towers shooting
+        // check the status of all towers
+        for (int i = 0; i < towers.size(); i++) {
+            // check if this tower is ready to hit
+            if (towers.get(i).willFire(timeStep)) {
+                // search the nearest enemy.
+                int pos = 0;
+                int index = enemies.size();
+                for (int j = 0; j < enemies.size(); j++) {
+                    if (enemies.get(j).getPosition() <= towers.get(i).getPosition()
+                            && enemies.get(j).getPosition() >= pos) {
+                        pos = enemies.get(j).getPosition();
+                        index = j;
+                    }
+                }
+                if (index < enemies.size()) {
+                    enemies.get(index).hit(towers.get(i));
+                }
+                // delete the died enemy
+                if (enemies.get(index).getHealth() <= 0) {
+                    budget += enemies.get(index).getPay();
+                    enemies.remove(index);
+                }
+                if (enemies.size() == 0) {
+                    System.out.println("YOU WIN!!");
+                }
+            }
+        }
+
+        // enemies moving
+        // check the status of all enemies
+        for (int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).advance();
+            if (enemies.get(i).position >= corridorLength) {
+                gameOver();
+            }
+        }
+
+        // show statues and ask if go ahead.
+        show();
+        System.out.println("*************************** Step: " + timeStep + " is over.  ***************************");
+
+        // timeStep + 1
+        this.timeStep += 1;
+    }
+
+    /**
+     * Call this function when game is over
+     */
+    public void gameOver() {
+        System.out.println("Game Over");
+        this.end = true;
+    }
+
+    /**
+     * Generate unless 1 enemy randomly.
+     */
+    public void geneEnemy() {
+        Random random = new Random();
+        int nr = random.nextInt(5);
+        int ne = random.nextInt(3);
+        while (ne + nr == 0) {
+            nr = random.nextInt(5);
+            ne = random.nextInt(3);
+        }
+        for (int i = 0; i < nr; i++) {
+            enemies.add(new Rat());
+        }
+        for (int i = 0; i < ne; i++) {
+            enemies.add(new Elephant());
+        }
+    }
+
+    /**
+     * 
+     */
+    public void buildTower() {
+        Scanner scanner = new Scanner(System.in);
         while (budget > 0) {
             if (budget >= Game.SLINGSHOT_COST) {
                 System.out.println("BUDGET: " + this.budget);
@@ -147,12 +227,14 @@ public class Game {
                         System.out.println("Choose position in (0," + (corridorLength - 1) + "):");
                         int pos = scanner.nextInt();
                         while (pos > corridorLength || pos < 0 || corridor.get(pos) == true) {
-                            // Check if the input position is in the correct range.
+                            // Check if the input position is in the correct
+                            // range.
                             if (pos > corridorLength || pos < 0) {
                                 System.out.println("The position should between 0 and " + corridorLength + ".");
                                 pos = scanner.nextInt();
                             }
-                            // Check input position, until that position is empty.
+                            // Check input position, until that position is
+                            // empty.
                             if (corridor.get(pos) == true) {
                                 System.out.println("This position was occupied.");
                                 pos = scanner.nextInt();
@@ -176,87 +258,11 @@ public class Game {
                 break;
             }
         }
-
-        // System.out.println("******* Recent enemies and towers: *******");
-        // show();
-
-        // check the status of all towers
-        // System.out.println("***************** Shooting **************");
-        for (int i = 0; i < towers.size(); i++) {
-            // check if this tower is ready to hit
-            if (towers.get(i).willFire(timeStep)) {
-                // search the nearest enemy.
-                int pos = 0;
-                int index = enemies.size();
-                for (int j = 0; j < enemies.size(); j++) {
-                    if (enemies.get(j).getPosition() <= towers.get(i).getPosition()
-                            && enemies.get(j).getPosition() >= pos) {
-                        pos = enemies.get(j).getPosition();
-                        index = j;
-                    }
-                }
-                if (index < enemies.size()) {
-                    enemies.get(index).hit(towers.get(i));
-                }
-                // delete the died enemy
-                if (enemies.get(index).getHealth() <= 0) {
-                    budget += enemies.get(index).getPay();
-                    enemies.remove(index);
-                }
-                if (enemies.size() == 0) {
-                    System.out.println("YOU WIN!!");
-                }
-            }
-        }
-
-        // show();
-
-        // check the status of all enemies
-        // System.out.println("*************** Enemy Advancing ************");
-        for (int i = 0; i < enemies.size(); i++) {
-            enemies.get(i).advance();
-            if (enemies.get(i).position >= corridorLength) {
-                gameOver();
-            }
-        }
-
-        show();
-
-        // show statues and ask if go ahead.
-        System.out.println("*************************** Step: " + timeStep + " is over.  ***************************");
-
-        // timeStep + 1
-        this.timeStep += 1;
-
     }
 
     /**
-     * Call this function when game is over
+     * 
      */
-    public void gameOver() {
-        System.out.println("Game Over");
-        this.end = true;
-    }
-
-    /**
-     * Generate unless 1 enemy randomly.
-     */
-    public void geneEnemy() {
-        Random random = new Random();
-        int nr = random.nextInt(5);
-        int ne = random.nextInt(3);
-        while (ne + nr == 0) {
-            nr = random.nextInt(5);
-            ne = random.nextInt(3);
-        }
-        for (int i = 0; i < nr; i++) {
-            enemies.add(new Rat());
-        }
-        for (int i = 0; i < ne; i++) {
-            enemies.add(new Elephant());
-        }
-    }
-
     public void show() {
         System.out.println("************************ Results ************************");
         StringBuffer str1 = new StringBuffer(corridorLength);
