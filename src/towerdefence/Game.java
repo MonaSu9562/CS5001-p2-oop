@@ -55,6 +55,23 @@ public class Game {
     public static final int ELEPHANT_DISTANCE = 1;
 
     /**
+     * the health of dog.
+     */
+    public static final int DOG_HEALTH = 3;
+    /**
+     * the payment player get if one dog was killed.
+     */
+    public static final int DOG_PAYMENT = 3;
+    /**
+     * dog move "distance" position every "step" game steps.
+     */
+    public static final int DOG_STEP = 1;
+    /**
+     * dog move "distance" position every "step" game steps.
+     */
+    public static final int DOG_DIATANCE = 1;
+
+    /**
      * the damage slingshot could make in one hit.
      */
     public static final int SLINGSHOT_DAMAGE = 1;
@@ -79,6 +96,19 @@ public class Game {
      * the price of catapult.
      */
     public static final int CATAPULT_COST = 15;
+
+    /**
+     * the damage archertower could make in one hit.
+     */
+    public static final int ARCHER_DAMAGE = 2;
+    /**
+     * the load time of archertower.
+     */
+    public static final int ARCHER_LOADTIME = 2;
+    /**
+     * the price of archertower.
+     */
+    public static final int ARCHER_COST = 8;
 
     /**
      * This is the constructor of class Game.
@@ -139,6 +169,7 @@ public class Game {
                 }
                 if (enemies.size() == 0) {
                     System.out.println("YOU WIN!!");
+                    System.exit(0);
                 }
             }
         }
@@ -166,6 +197,7 @@ public class Game {
     public void gameOver() {
         System.out.println("Game Over");
         this.end = true;
+        System.exit(0);
     }
 
     /**
@@ -173,8 +205,8 @@ public class Game {
      */
     public void geneEnemy() {
         Random random = new Random();
-        int nr = random.nextInt(5);
-        int ne = random.nextInt(3);
+        int nr = random.nextInt(2);
+        int ne = random.nextInt(1);
         while (ne + nr == 0) {
             nr = random.nextInt(5);
             ne = random.nextInt(3);
@@ -191,6 +223,7 @@ public class Game {
      * 
      */
     public void buildTower() {
+        @SuppressWarnings("resource")
         Scanner scanner = new Scanner(System.in);
         while (budget > 0) {
             if (budget >= Game.SLINGSHOT_COST) {
@@ -204,10 +237,10 @@ public class Game {
                 if (input == 1) {
                     System.out.println("Choose position in (0," + (corridorLength - 1) + "):");
                     int pos = scanner.nextInt();
-                    while (pos > corridorLength || pos < 0 || corridor.get(pos) == true) {
+                    while (pos >= corridorLength || pos < 0 || corridor.get(pos) == true) {
                         // Check if the input position is in the correct range.
-                        if (pos > corridorLength || pos < 0) {
-                            System.out.println("The position should between 0 and " + corridorLength + ".");
+                        if (pos >= corridorLength || pos < 0) {
+                            System.out.println("The position should between 0 and " + (corridorLength - 1) + ".");
                             pos = scanner.nextInt();
                         }
                         // Check input position, until that position is empty.
@@ -226,11 +259,11 @@ public class Game {
                     if (budget >= Game.CATAPULT_COST) {
                         System.out.println("Choose position in (0," + (corridorLength - 1) + "):");
                         int pos = scanner.nextInt();
-                        while (pos > corridorLength || pos < 0 || corridor.get(pos) == true) {
+                        while (pos >= corridorLength || pos < 0 || corridor.get(pos) == true) {
                             // Check if the input position is in the correct
                             // range.
-                            if (pos > corridorLength || pos < 0) {
-                                System.out.println("The position should between 0 and " + corridorLength + ".");
+                            if (pos >= corridorLength || pos < 0) {
+                                System.out.println("The position should between 0 and " + (corridorLength - 1) + ".");
                                 pos = scanner.nextInt();
                             }
                             // Check input position, until that position is

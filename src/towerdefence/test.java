@@ -7,7 +7,7 @@ public class test {
      * @param args
      */
     public static void main(String[] args) {
-        Game game = new Game(50);
+        Game game = new Game(10);
         while (game.end != true) {
             game.advance();
         }
