@@ -13,6 +13,7 @@ public class Tower {
     protected int position;
     protected int loadTime;
     protected int cost;
+    protected String type;
 
     /**
      * Initialise the tower.
@@ -40,8 +41,17 @@ public class Tower {
     }
 
     /**
-     * This is to get the shoot status of this tower. Return true if it is ready
-     * to shoot.
+     * Return the type of this tower
+     * 
+     * @return type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * This is to get the shoot status of this tower. Return true if it is ready to
+     * shoot.
      * 
      * @param timeStep
      *            the current time step of the game

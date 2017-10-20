@@ -18,6 +18,7 @@ public class Elephant extends Enemy {
         this.distance = Game.ELEPHANT_DISTANCE;
         this.step = Game.ELEPHANT_STEP;
         this.pay = Game.ELEPHANT_PAYMENT;
+        this.type = "Elephant";
     }
 
     /**

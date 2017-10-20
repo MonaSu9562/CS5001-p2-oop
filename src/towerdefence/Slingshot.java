@@ -20,6 +20,7 @@ public class Slingshot extends Tower {
         this.damage = Game.SLINGSHOT_DAMAGE;
         this.loadTime = Game.SLINGSHOT_LOADTIME;
         this.cost = Game.SLINGSHOT_COST;
+        this.type = "Slingshot";
     }
 
     /**

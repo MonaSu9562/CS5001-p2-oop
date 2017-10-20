@@ -20,6 +20,7 @@ public class Catapult extends Tower {
         this.damage = Game.CATAPULT_DAMAGE;
         this.loadTime = Game.CATAPULT_LOADTIME;
         this.cost = Game.CATAPULT_COST;
+        this.type = "Catapult";
     }
 
     /**

@@ -13,6 +13,7 @@ public class Enemy {
     protected int step;
     protected int position;
     protected int pay;
+    protected String type;
 
     /**
      * Initialise the enemy.
@@ -43,8 +44,17 @@ public class Enemy {
     }
 
     /**
-     * This will be called when this enemy is hit. Updating the health level of
-     * this enemy.
+     * Return the type of this enemy.
+     * 
+     * @return type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * This will be called when this enemy is hit. Updating the health level of this
+     * enemy.
      * 
      * @param t
      *            the tower who hit this enemy.

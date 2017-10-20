@@ -3,7 +3,6 @@
  */
 package towerdefence;
 
-import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -12,7 +11,7 @@ import java.util.Scanner;
  * 
  *
  */
-public class Game extends Frame {
+public class Game {
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private ArrayList<Tower> towers = new ArrayList<Tower>();
     public int timeStep;
@@ -94,7 +93,7 @@ public class Game extends Frame {
         for (int i = 0; i < corridorLength; i++) {
             corridor.add(false);
         }
-        System.out.println("*********************** TOWER DEFENCE ***********************");
+        System.out.println("############################ TOWER DEFENCE ############################");
         System.out.println("The length of this corridor is " + corridorLength);
     }
 
@@ -102,13 +101,17 @@ public class Game extends Frame {
      * This is used to advance the state of the game by one step.
      */
     public void advance() {
+        @SuppressWarnings("resource")
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Press Enter to continue");
+        scanner.nextLine();
+
+        System.out.println("*************************** TimeStep: " + timeStep + "***************************");
         // generate enemy randomly.
-        System.out.println("*************** generate enemies ************");
         geneEnemy();
-        show();
 
         // place new towers
-        System.out.println("***************** spending *****************");
         while (budget > 0) {
             if (budget >= Game.SLINGSHOT_COST) {
                 System.out.println("BUDGET: " + this.budget);
@@ -117,15 +120,21 @@ public class Game extends Frame {
                 System.out.println("(2) Catapult:\tCost:" + Game.CATAPULT_COST + "\tDamage:" + Game.CATAPULT_DAMAGE
                         + "\tLoad Time:" + Game.CATAPULT_LOADTIME);
                 System.out.println("(3) None");
-                Scanner scanner = new Scanner(System.in);
                 int input = scanner.nextInt();
                 if (input == 1) {
                     System.out.println("Choose position in (0," + (corridorLength - 1) + "):");
                     int pos = scanner.nextInt();
-                    // if this position is empty
-                    while (corridor.get(pos) == true) {
-                        System.out.println("This position was occupied.");
-                        pos = scanner.nextInt();
+                    while (pos > corridorLength || pos < 0 || corridor.get(pos) == true) {
+                        // Check if the input position is in the correct range.
+                        if (pos > corridorLength || pos < 0) {
+                            System.out.println("The position should between 0 and " + corridorLength + ".");
+                            pos = scanner.nextInt();
+                        }
+                        // Check input position, until that position is empty.
+                        if (corridor.get(pos) == true) {
+                            System.out.println("This position was occupied.");
+                            pos = scanner.nextInt();
+                        }
                     }
                     // add new tower
                     Slingshot s = new Slingshot(pos);
@@ -134,30 +143,45 @@ public class Game extends Frame {
                     // updating budget
                     budget -= Game.SLINGSHOT_COST;
                 } else if (input == 2) {
-                    System.out.println("Choose position in (0," + (corridorLength - 1) + "):");
-                    int pos = scanner.nextInt();
-                    // if this position is empty
-                    while (corridor.get(pos) == true) {
-                        System.out.println("This position was occupied.");
-                        pos = scanner.nextInt();
+                    if (budget >= Game.CATAPULT_COST) {
+                        System.out.println("Choose position in (0," + (corridorLength - 1) + "):");
+                        int pos = scanner.nextInt();
+                        while (pos > corridorLength || pos < 0 || corridor.get(pos) == true) {
+                            // Check if the input position is in the correct range.
+                            if (pos > corridorLength || pos < 0) {
+                                System.out.println("The position should between 0 and " + corridorLength + ".");
+                                pos = scanner.nextInt();
+                            }
+                            // Check input position, until that position is empty.
+                            if (corridor.get(pos) == true) {
+                                System.out.println("This position was occupied.");
+                                pos = scanner.nextInt();
+                            }
+                        }
+                        // add new tower
+                        Catapult c = new Catapult(pos);
+                        towers.add(c);
+                        corridor.add(pos, true);
+                        // updating budget
+                        budget -= Game.CATAPULT_COST;
+                    } else {
+                        System.out.println("Don't have enough budget. Please choose again.\n");
                     }
-                    // add new tower
-                    Catapult c = new Catapult(pos);
-                    towers.add(c);
-                    corridor.add(pos, true);
-                    // updating budget
-                    budget -= Game.CATAPULT_COST;
+
                 } else if (input == 3) {
                     break;
                 }
             } else {
-                System.out.println("BUDGET: " + this.budget + "\t Can not buy anything.");
+                System.out.println("BUDGET: " + this.budget + "\nCan not buy anything.\n");
                 break;
             }
         }
 
+        // System.out.println("******* Recent enemies and towers: *******");
+        // show();
+
         // check the status of all towers
-        System.out.println("*************** killing ************");
+        // System.out.println("***************** Shooting **************");
         for (int i = 0; i < towers.size(); i++) {
             // check if this tower is ready to hit
             if (towers.get(i).willFire(timeStep)) {
@@ -184,20 +208,26 @@ public class Game extends Frame {
                 }
             }
         }
-        show();
+
+        // show();
 
         // check the status of all enemies
-        System.out.println("*************** enemyadvancing ************");
+        // System.out.println("*************** Enemy Advancing ************");
         for (int i = 0; i < enemies.size(); i++) {
             enemies.get(i).advance();
             if (enemies.get(i).position >= corridorLength) {
                 gameOver();
             }
         }
+
         show();
 
+        // show statues and ask if go ahead.
+        System.out.println("*************************** Step: " + timeStep + " is over.  ***************************");
+
         // timeStep + 1
-        timeStep += 1;
+        this.timeStep += 1;
+
     }
 
     /**
@@ -209,27 +239,16 @@ public class Game extends Frame {
     }
 
     /**
-     * Let player choose which tower tobuild.
-     */
-    public int chooseTower() {
-        System.out.println("BUDGET: " + this.budget);
-        System.out.println("You can buy:");
-        System.out.println("(1) Slingshot:\tCost:" + Game.SLINGSHOT_COST + "\tDamage:" + Game.SLINGSHOT_DAMAGE
-                + "\tLoad Time:" + Game.SLINGSHOT_LOADTIME);
-        System.out.println("(2) Catapult:\tCost:" + Game.CATAPULT_COST + "\tDamage:" + Game.CATAPULT_DAMAGE
-                + "\tLoad Time:" + Game.CATAPULT_LOADTIME);
-        System.out.println("(3) None");
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextInt();
-    }
-
-    /**
-     * generate enemy
+     * Generate unless 1 enemy randomly.
      */
     public void geneEnemy() {
         Random random = new Random();
         int nr = random.nextInt(5);
         int ne = random.nextInt(3);
+        while (ne + nr == 0) {
+            nr = random.nextInt(5);
+            ne = random.nextInt(3);
+        }
         for (int i = 0; i < nr; i++) {
             enemies.add(new Rat());
         }
@@ -239,24 +258,41 @@ public class Game extends Frame {
     }
 
     public void show() {
+        System.out.println("************************ Results ************************");
+        StringBuffer str1 = new StringBuffer(corridorLength);
+        StringBuffer str2 = new StringBuffer(corridorLength);
+
+        for (int i = 0; i < corridorLength; i++) {
+            str1.append('_');
+            str2.append('_');
+        }
+
         for (int i = 0; i < enemies.size(); i++) {
             System.out.println(enemies.get(i).toString());
         }
         for (int i = 0; i < towers.size(); i++) {
             System.out.println(towers.get(i).toString());
         }
-        System.out.println("------------------------------------------");
+
+        for (int i = 0; i < towers.size(); i++) {
+            int pos = towers.get(i).getPosition();
+            if (towers.get(i).getType().equals("Slingshot")) {
+                str1.replace(pos, pos + 1, "^");
+            } else if (towers.get(i).getType().equals("Catapult")) {
+                str1.replace(pos, pos + 1, "A");
+            }
+        }
+        System.out.println(str1);
+
+        for (int i = 0; i < enemies.size(); i++) {
+            int pos = enemies.get(i).getPosition();
+            if (enemies.get(i).getType().equals("Rat")) {
+                str2.replace(pos, pos + 1, ".");
+            } else if (enemies.get(i).getType().equals("Elephant")) {
+                str2.replace(pos, pos + 1, "O");
+            }
+        }
+        System.out.println(str2);
     }
 
-    /**
-     * This is the main function.
-     * 
-     * @param args
-     */
-    public static void main(String[] args) {
-        Game game = new Game(50);
-        while (game.end != true) {
-            game.advance();
-        }
-    }
 }

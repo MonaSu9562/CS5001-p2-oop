@@ -18,6 +18,7 @@ public class Rat extends Enemy {
         this.distance = Game.RAT_DIATANCE;
         this.step = Game.RAT_STEP;
         this.pay = Game.RAT_PAYMENT;
+        this.type = "Rat";
     }
 
     /**
